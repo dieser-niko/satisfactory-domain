@@ -1,0 +1,38 @@
+services:
+  satisfactory-server:
+    container_name: 'satisfactory-server'
+    hostname: 'satisfactory-server'
+    image: 'wolveix/satisfactory-server:latest'
+    ports:
+      - '7777:7777/udp'
+      # - '7777:7777/tcp'
+    volumes:
+      - './factoryconfig:/config'
+    environment:
+      - MAXPLAYERS=4
+      - PGID=1000
+      - PUID=1000
+      - ROOTLESS=false
+      - STEAMBETA=false
+    restart: unless-stopped
+    healthcheck:
+      test: bash /healthcheck.sh
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
+  caddy:
+    image: caddy:latest
+    restart: unless-stopped
+    ports:
+      - "7780:80"
+      - "7777:443/tcp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy_data:/data
+      - ./caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:
