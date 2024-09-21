@@ -5,8 +5,12 @@ This repository describes how to deploy a Satisfactory Server that has a valid S
 ## Setup
 
 Make sure that you have docker running on your system.
+
 Configure `Caddyfile` with the correct mail address and domain.
+
 If you don't have another reverse proxy on your system, change port 7780 to 80 in the `docker-compose.yml`.
+
+If you want to change the default config, refer to [wolveix/satisfactory-server](https://github.com/wolveix/satisfactory-server).
 
 Make sure to open the following ports:
 - 80/tcp
