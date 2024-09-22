@@ -5,9 +5,11 @@ services:
     image: 'wolveix/satisfactory-server:latest'
     ports:
       - '7777:7777/udp'
-      # - '7777:7777/tcp'
+      - '7777:7777/tcp'
     volumes:
-      - './factoryconfig:/config'
+      - './config:/config'
+      - './certs/live/${DOMAIN}/privkey.pem:/config/gamefiles/FactoryGame/Certificates/private_key.pem'
+      - './certs/live/${DOMAIN}/fullchain.pem:/config/gamefiles/FactoryGame/Certificates/cert_chain.pem'
     environment:
       - MAXPLAYERS=4
       - PGID=1000
@@ -15,6 +17,9 @@ services:
       - ROOTLESS=false
       - STEAMBETA=false
     restart: unless-stopped
+    depends_on:
+      certbot:
+        condition: service_completed_successfully
     healthcheck:
       test: bash /healthcheck.sh
       interval: 30s
@@ -22,13 +27,11 @@ services:
       retries: 3
       start_period: 120s
 
-  caddy:
-    image: caddy:latest
-    restart: unless-stopped
-    ports:
-      - "7780:80"
-      - "7777:443/tcp"
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - ./caddy_data:/data
-      - ./caddy_config:/config
+      - ./certs:/etc/letsencrypt
+    command: certonly --standalone --non-interactive --agree-tos -m ${CERTBOT_MAIL} -d ${DOMAIN}
+    ports:
+      - "80:80"
