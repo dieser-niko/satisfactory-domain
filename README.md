@@ -1,3 +1,8 @@
+# PLEASE VISIT [wolveix / satisfactory-server/ssl](https://github.com/wolveix/satisfactory-server/tree/main/ssl)
+## This repository is only a POC for an implementation (which has been implemented)
+
+---
+
 # Satisfactory Server with Valid SSL
 
 This repository describes how to provide a Satisfactory server with a valid SSL certificate, so that players don't have to accept a self-signed certificate.
